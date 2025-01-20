@@ -26,17 +26,20 @@ const userSchema = new mongoose.Schema(
                 required: true
             },
         },
-        role: {
-            type: String,
-            required: true,
-            enum: ["Patient", "Consultant"],
-        },
         password: {
             type: String,
             required: true,
             minLength: [8,"Password must contain at least 8 characters!"],
             maxLength: [32, "Password cannot exceed 32 characters"],
             select: false,
+        },
+        resetPasswordToken: String,
+        resetPasswordExpire: Date,
+        verifyEmailToken: String,
+        verifyEmailTokenExpire: Date,
+        isEmailVerified: {
+            type: Boolean,
+            default: false,
         },
         createdOn: {
             type: Date,
@@ -66,4 +69,4 @@ usderSchema.methods.getJwtToken = function () {
     });
 }
 
-export default mongoose.model("User", userSchema);
+export const User =  mongoose.model("User", userSchema);
