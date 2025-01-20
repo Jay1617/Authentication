@@ -1,10 +1,5 @@
-import dotenv from 'dotenv';
-import express from 'express'
+import app  from "./app.js";
 
-const app = express();
-dotenv.config({path: '.config/.env'});
-const PORT = process.env.PORT || 8000; 
-
-app.listen(PORT, () => {
-    console.log(`Server stared successfully at PORT : ${PORT}`);
-} )
+app.listen(process.env.PORT, () => {
+  console.log(`Server stared successfully at PORT : ${process.env.PORT}`);
+});
