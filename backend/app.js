@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import dbConnection from './database/dbConnection.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import { errorMiddleware } from './middlewares/error.js';
 
 const app = express();
 dotenv.config({path: './config/.env'});
@@ -12,10 +13,12 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
 }));
-// app.use(express.json());
+app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 dbConnection();
+
+app.use(errorMiddleware);
 
 export default app;
