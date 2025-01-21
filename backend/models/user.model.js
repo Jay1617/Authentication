@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import bcrypt from "bcryptjs";
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import validator from "validator";
 
@@ -14,6 +14,7 @@ const userSchema = new mongoose.Schema(
     email: {
       type: String,
       required: true,
+      unique: true,
       validate: [validator.isEmail, "Please provide a valid email!"],
     },
     avatar: {
@@ -36,7 +37,9 @@ const userSchema = new mongoose.Schema(
     phone: {
       type: String,
       required: [true, "Please enter your phone number"],
+      minLength: [10, "Phone number must contain at least 10 characters!"],
       maxLength: [13, "Phone number cannot exceed 13 characters"],
+      unique: true,
     },
     verificationMethod: {
       type: String,
@@ -75,7 +78,14 @@ userSchema.methods.comparePassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-usderSchema.methods.getJwtToken = function () {
+userSchema.methods.getVerificationCode = async function () {
+  const verificationCode = Math.floor(100000 + Math.random() * 900000);
+  this.verificationCode = verificationCode;
+  this.verificationCodeExpires = Date.now() + 10 * 60 * 1000;
+  return verificationCode;
+};
+
+userSchema.methods.getJwtToken = function () {
   return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_TIME,
   });
