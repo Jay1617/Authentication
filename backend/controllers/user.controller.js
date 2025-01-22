@@ -10,16 +10,34 @@ export const register = catchAsyncError(async (req, res, next) => {
   try {
     const { name, email, password, phone, verificationMethod } = req.body;
 
+    // console.log(req.body);
+
     if (!name || !email || !password || !phone || !verificationMethod) {
       return next(new ErrorHandler("Please fill in all fields", 400));
     }
 
-    function validatePhone(phone) {
-      const phoneRegex = /^(?:\+91)?[6-9][0-9]{9}$/;
-      return phoneRegex.test(phone);
+    if (password.length > 32) {
+      return next(
+        new ErrorHandler("Password must be at most 32 characters long", 400)
+      );
     }
 
-    if (!validatePhone(phone)) {
+    function validateAndFormatPhone(phone) {
+      const phoneRegex = /^[6-9][0-9]{9}$/;
+      const fullPhoneRegex = /^\+91[6-9][0-9]{9}$/;
+
+      if (fullPhoneRegex.test(phone)) {
+        return phone;
+      } else if (phoneRegex.test(phone)) {
+        return `+91${phone}`;
+      } else {
+        return null;
+      }
+    }
+
+    const formattedPhone = validateAndFormatPhone(phone);
+
+    if (!formattedPhone) {
       return next(new ErrorHandler("Please enter a valid phone number", 400));
     }
 
@@ -41,7 +59,7 @@ export const register = catchAsyncError(async (req, res, next) => {
     }
 
     const attemptTracker = {};
-    const MAX_ATTEMPTS = 3;
+    const MAX_ATTEMPTS = 100;
     const ATTEMPT_RESET_TIME = 60 * 60 * 1000;
 
     const key = email || phone;
@@ -79,13 +97,16 @@ export const register = catchAsyncError(async (req, res, next) => {
     const user = await User.create(userData);
 
     const verificationCode = await user.getVerificationCode();
+
     await user.save();
 
-    sendVerificationCode(verificationMethod, verificationCode, email, phone);
-
-    res.status(201).json({
-      success: true,
-    });
+    sendVerificationCode(
+      verificationMethod,
+      verificationCode,
+      email,
+      phone,
+      res
+    );
   } catch (error) {
     next(error);
   }
@@ -95,27 +116,44 @@ async function sendVerificationCode(
   verificationMethod,
   verificationCode,
   email,
-  phone
+  phone,
+  res
 ) {
   try {
     if (verificationMethod === "email") {
       const message = generateEmailTemplate(verificationCode);
-      await sendEmail({
-        email: email,
-        subject: "Account Verification Code",
-        message,
+
+      await sendEmail(email, "Account Verification Code", message);
+
+      res.status(201).json({
+        success: true,
+        message: `Verification code sent successfully to ${email}`,
       });
     } else if (verificationMethod === "phone") {
-      await client.messages.create({
-        body: `Your verification code is: ${verificationCode}`,
-        from: process.env.TWILIO_PHONE_NUMBER,
-        to: phone,
+      try {
+        await client.messages
+          .create({
+            to: phone,
+            from: process.env.TWILIO_PHONE_NUMBER,
+            body: `Your verification code is: ${verificationCode}`,
+          })
+          .then((message) => console.log(message.sid));
+      } catch (error) {
+        console.log("Failed to send SMS:", error.message);
+      }
+
+      res.status(201).json({
+        success: true,
+        message: `Verification code sent successfully to ${phone}`,
       });
     } else {
       throw new ErrorHandler("Invalid verification method", 400);
     }
   } catch (error) {
-    throw new ErrorHandler(error.message, 500);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to send verification code",
+    });
   }
 }
 

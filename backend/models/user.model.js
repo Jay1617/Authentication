@@ -5,7 +5,7 @@ import validator from "validator";
 
 const userSchema = new mongoose.Schema(
   {
-    username: {
+    name: {
       type: String,
       required: true,
       minLength: [3, "Name must contain at least 3 characters!"],
@@ -17,21 +17,20 @@ const userSchema = new mongoose.Schema(
       unique: true,
       validate: [validator.isEmail, "Please provide a valid email!"],
     },
-    avatar: {
-      public_id: {
-        type: String,
-        required: true,
-      },
-      url: {
-        type: String,
-        required: true,
-      },
-    },
+    // avatar: {
+    //   public_id: {
+    //     type: String,
+    //     required: true,
+    //   },
+    //   url: {
+    //     type: String,
+    //     required: true,
+    //   },
+    // },
     password: {
       type: String,
       required: true,
-      minLength: [8, "Password must contain at least 8 characters!"],
-      maxLength: [32, "Password cannot exceed 32 characters"],
+      minLength: [8, "Password must contain at least 8 characters"],
       select: false,
     },
     phone: {
@@ -41,14 +40,14 @@ const userSchema = new mongoose.Schema(
       maxLength: [13, "Phone number cannot exceed 13 characters"],
       unique: true,
     },
-    verificationMethod: {
-      type: String,
-      required: true,
-      enum: {
-        values: ["email", "phone"],
-        message: "Please select a verification method",
-      },
-    },
+    // verificationMethod: {
+    //   type: String,
+    //   required: true,
+    //   enum: {
+    //     values: ["email", "phone"],
+    //     message: "Please select a verification method",
+    //   },
+    // },
     verificationCode: Number,
     verificationCodeExpires: Date,
     resetPasswordToken: String,
@@ -78,7 +77,7 @@ userSchema.methods.comparePassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-userSchema.methods.getVerificationCode = async function () {
+userSchema.methods.getVerificationCode = async function () {  
   const verificationCode = Math.floor(100000 + Math.random() * 900000);
   this.verificationCode = verificationCode;
   this.verificationCodeExpires = Date.now() + 10 * 60 * 1000;
