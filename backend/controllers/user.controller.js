@@ -1,8 +1,11 @@
 import { User } from "../models/user.model.js";
-import { ErrorHandler } from "../utils/errorHandler.js";
+import ErrorHandler from "../middlewares/error.js";
 import { catchAsyncError } from "../utils/catchAsyncError.js";
 import { sendEmail } from "../utils/sendEmail.js";
+import { sendToken } from "../utils/sendToken.js";
 import twilio from "twilio";
+import crypto from "crypto";
+import bcrypt from "bcrypt";
 
 const client = twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
 
@@ -59,7 +62,7 @@ export const register = catchAsyncError(async (req, res, next) => {
     }
 
     const attemptTracker = {};
-    const MAX_ATTEMPTS = 100;
+    const MAX_ATTEMPTS = 3;
     const ATTEMPT_RESET_TIME = 60 * 60 * 1000;
 
     const key = email || phone;
@@ -178,3 +181,207 @@ const generateEmailTemplate = (verificationCode) => {
     </div>
   `;
 };
+
+export const verifyAccount = catchAsyncError(async (req, res, next) => {
+  try {
+    const { email, phone, verificationCode } = req.body;
+
+    if (!verificationCode || !email || !phone) {
+      return next(new ErrorHandler("Please enter verification code", 400));
+    }
+
+    function validateAndFormatPhone(phone) {
+      const phoneRegex = /^[6-9][0-9]{9}$/;
+      const fullPhoneRegex = /^\+91[6-9][0-9]{9}$/;
+
+      if (fullPhoneRegex.test(phone)) {
+        return phone;
+      } else if (phoneRegex.test(phone)) {
+        return `+91${phone}`;
+      } else {
+        return null;
+      }
+    }
+
+    const formattedPhone = validateAndFormatPhone(phone);
+
+    if (!formattedPhone) {
+      return next(new ErrorHandler("Please enter a valid phone number", 400));
+    }
+
+    const existingUser = await User.findOne({
+      $or: [
+        {
+          email,
+          accountVerified: true,
+        },
+        {
+          phone: formattedPhone,
+          accountVerified: true,
+        },
+      ],
+    });
+
+    if (existingUser) {
+      return next(new ErrorHandler("User already verified", 400));
+    }
+
+    const user = await User.findOne({
+      email,
+      phone: formattedPhone,
+      verificationCode,
+    });
+
+    if (!user) {
+      return next(new ErrorHandler("Invalid verification code", 400));
+    }
+
+    const currentTime = Date.now();
+    const codeExpires = new Date(user.verificationCodeExpires).getTime();
+
+    if (currentTime > codeExpires) {
+      return next(new ErrorHandler("Verification code has expired", 400));
+    }
+
+    user.accountVerified = true;
+    user.verificationCode = null;
+    user.verificationCodeExpires = null;
+
+    await user.save({ validateModifiedOnly: true });
+
+    sendToken(user, "Account Verified", 200, res);
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
+export const login = catchAsyncError(async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return next(new ErrorHandler("Please enter email and password", 400));
+    }
+
+    const user = await User.findOne({ email, accountVerified: true }).select(
+      "+password"
+    );
+
+    if (!user) {
+      return next(
+        new ErrorHandler("Email not found...please register your email", 400)
+      );
+    }
+
+    if (!(await user.comparePassword(password))) {
+      return next(new ErrorHandler("Invalid password...", 400));
+    }
+
+    sendToken(user, "Logged in successfully", 200, res);
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 400));
+  }
+});
+
+export const logout = catchAsyncError(async (req, res, next) => {
+  res.cookie("token", null, {
+    expires: new Date(Date.now()),
+    httpOnly: true,
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Logged out successfully",
+  });
+});
+
+export const getUserProfile = catchAsyncError(async (req, res, next) => {
+  const user = req.user;
+
+  res.status(200).json({
+    success: true,
+    user,
+  });
+});
+
+export const forgotPassword = catchAsyncError(async (req, res, next) => {
+  const user = await User.findOne({
+    email: req.body.email,
+    accountVerified: true,
+  });
+
+  if (!user) {
+    return next(new ErrorHandler("User not found with this email", 404));
+  }
+
+  const resetToken = await user.getResetPasswordToken();
+
+  await user.save({ validateBeforeSave: false });
+
+  const resetUrl = `${process.env.FRONTEND_URL}/password/reset/${resetToken}`;
+
+  const message = `
+    <h1>Password Reset Request</h1>
+    <p>Please go to this link to reset your password:</p>
+    <a href=${resetUrl} clicktracking=off>${resetUrl}</a>
+  `;
+
+  try {
+    await sendEmail(user.email, "Password Reset Request", message);
+
+    res.status(200).json({
+      success: true,
+      message: `Email sent to: ${user.email}`,
+    });
+  } catch (error) {
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+
+    await user.save({ validateBeforeSave: false });
+
+    return next(new ErrorHandler("Email could not be sent", 500));
+  }
+});
+
+export const resetPassword = catchAsyncError(async (req, res, next) => {
+  const { token } = req.params;
+  const resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(token)
+    .digest("hex");
+
+  const user = await User.findOne({
+    resetPasswordToken,
+    resetPasswordExpires: { $gt: Date.now() },
+  }).select('+password');;
+
+  if (!user) {
+    return next(new ErrorHandler("Invalid reset token", 400));
+  }
+
+  const { password, confirmPassword } = req.body;
+
+  if (password !== confirmPassword) {
+    return next(new ErrorHandler("Passwords do not match", 400));
+  }
+
+  if (password.length > 32) {
+    return next(
+      new ErrorHandler("Password must be at most 32 characters long", 400)
+    );
+  }
+
+  const isSamePassword = await bcrypt.compare(password, user.password);
+  if (isSamePassword) {
+    return next(new ErrorHandler("Please enter a new password", 400));
+  }
+
+  user.password = password;
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpires = undefined;
+
+  await user.save();
+
+  sendToken(user, "Password Reset Successfully", 200, res);
+});
+  

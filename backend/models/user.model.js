@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import validator from "validator";
+import crypto from "crypto";
 
 const userSchema = new mongoose.Schema(
   {
@@ -14,7 +15,7 @@ const userSchema = new mongoose.Schema(
     email: {
       type: String,
       required: true,
-      unique: true,
+      unique: false,
       validate: [validator.isEmail, "Please provide a valid email!"],
     },
     // avatar: {
@@ -38,7 +39,6 @@ const userSchema = new mongoose.Schema(
       required: [true, "Please enter your phone number"],
       minLength: [10, "Phone number must contain at least 10 characters!"],
       maxLength: [13, "Phone number cannot exceed 13 characters"],
-      unique: true,
     },
     // verificationMethod: {
     //   type: String,
@@ -84,10 +84,24 @@ userSchema.methods.getVerificationCode = async function () {
   return verificationCode;
 };
 
-userSchema.methods.getJwtToken = function () {
+userSchema.methods.generateToken = async function () {
   return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_TIME,
   });
+};
+
+userSchema.methods.getResetPasswordToken = async function () {
+  const resetToken = crypto.randomBytes(20).toString("hex");
+
+  this.resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  this.resetPasswordExpires = Date.now() + 30 * 60 * 1000;
+
+  return resetToken;
+
 };
 
 export const User = mongoose.model("User", userSchema);
