@@ -1,6 +1,8 @@
+/* Home Button Styling */
 .home {
   position: relative;
 }
+
 .home button {
   position: absolute;
   top: 40px;
@@ -10,17 +12,23 @@
   font-weight: 500;
   border: none;
   border-radius: 8px;
-  background: #0cbb69;
+  background: #007bff; /* Blue background */
   color: #fff;
-  transition: all 0.3s;
+  transition: all 0.3s ease-in-out; /* Smooth transition */
+  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2); /* Subtle shadow for depth */
 }
+
 .home button:hover {
-  background: #068047;
+  background: #0056b3; /* Darker blue on hover */
   color: #fff;
-  transition: all 0.3s;
+  transform: translateY(-3px); /* Slight upward movement on hover */
+  box-shadow: 0 6px 15px rgba(0, 123, 255, 0.3); /* Enhanced shadow effect */
+  transition: all 0.3s ease-in-out;
 }
-@media(max-width: 1000px){
-    .home button{
-        right: 30px;
-    }
+
+/* Media Queries for responsiveness */
+@media(max-width: 1000px) {
+  .home button {
+    right: 30px; /* Adjust button position on smaller screens */
+  }
 }

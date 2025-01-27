@@ -1,3 +1,4 @@
+/* Hero Section Styling */
 .hero-section {
   min-height: 100vh;
   display: flex;
@@ -8,45 +9,51 @@
   width: 100%;
   text-align: center;
   padding: 20px;
+  background: #f1faff; /* Light blue background */
 }
 
 .hero-section img {
   width: 160px;
   height: 160px;
+  border-radius: 50%; /* Circular image */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* Subtle shadow around image */
 }
 
 .hero-section h4 {
   font-size: 32px;
   font-weight: 500;
+  color: #007bff; /* Blue color for subtitle */
 }
 
 .hero-section h1 {
   font-size: 44px;
   font-weight: 700;
+  color: #0056b3; /* Dark blue color for main heading */
 }
 
 .hero-section p {
   font-size: 20px;
-  color: gray;
+  color: #666;
   max-width: 700px;
   text-align: center;
   line-height: 2;
+  margin: 0 auto;
 }
 
-@media(max-width: 700px){
-    .hero-section h4 {
-        font-size: 24px;
-        font-weight: 500;
-      }
-      
-      .hero-section h1 {
-        font-size: 36px;
-        font-weight: 700;
-      }
+/* Media Queries for responsiveness */
+@media(max-width: 700px) {
+  .hero-section h4 {
+    font-size: 24px;
+    font-weight: 500;
+  }
 
-      .hero-section img {
-        width: 100px;
-        height: 100px;
-      }
-      
+  .hero-section h1 {
+    font-size: 36px;
+    font-weight: 700;
+  }
+
+  .hero-section img {
+    width: 100px;
+    height: 100px;
+  }
 }

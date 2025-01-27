@@ -1,11 +1,22 @@
+/* General Styling */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Auth Page */
 .auth-page {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: transparent;
+  background: #f0f4f8; /* Light background */
 }
 
+/* Auth Container */
 .auth-container {
   background: rgba(255, 255, 255, 0.9);
   padding: 40px;
@@ -14,8 +25,10 @@
   width: 100%;
   max-width: 400px;
   text-align: center;
+  border: 1px solid #ddd;
 }
 
+/* Auth Toggle */
 .auth-toggle {
   display: flex;
   justify-content: space-between;
@@ -27,30 +40,37 @@
   padding: 10px 0;
   font-size: 1rem;
   border: none;
-  background: #ddd;
+  background: #f1f6fc; /* Light Blue background */
+  color: #007bff; /* Blue Text */
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background 0.3s, color 0.3s;
 }
 
 .toggle-btn.active {
-  background: #0cbb69;
+  background: #007bff; /* Blue background when active */
   color: white;
 }
 
+/* Form Heading */
 .auth-form h2 {
   margin-bottom: 20px;
+  color: #007bff; /* Blue Text */
 }
 
+/* Form Input Fields */
 .auth-form input {
   width: 100%;
   padding: 10px;
   margin-bottom: 15px;
   border: 1px solid #ddd;
   border-radius: 5px;
+  font-size: 1rem;
 }
+
 .auth-form div {
   position: relative;
 }
+
 .auth-form div span {
   position: absolute;
   width: 50px;
@@ -63,14 +83,16 @@
   justify-content: center;
   align-items: center;
 }
+
 .auth-form div input[type="number"] {
   padding-left: 55px;
 }
 
+/* Button */
 .auth-form button {
   width: 100%;
   padding: 12px;
-  background: #0cbb69;
+  background: #007bff; /* Blue Button */
   color: white;
   border: none;
   border-radius: 5px;
@@ -80,18 +102,21 @@
 }
 
 .auth-form button:hover {
-  background: #068047;
+  background: #0056b3; /* Darker Blue on Hover */
 }
 
+/* Verification Method */
 .verification-method p {
   font-weight: 500;
   color: gray;
   text-align: start;
 }
+
 .verification-method .wrapper {
   display: flex;
   gap: 50px;
 }
+
 .verification-method label {
   display: flex;
   align-items: center;
@@ -100,14 +125,17 @@
   gap: 10px;
   margin: 20px 0;
 }
+
 .verification-method label input {
   margin-bottom: 0;
 }
+
+/* Forgot Password Link */
 .forgot-password {
   text-align: end;
   margin: 20px 0;
   font-size: 16px;
-  color: #0cbb69;
+  color: #007bff; /* Blue Text */
 }
 
 .forgot-password a {
@@ -118,5 +146,5 @@
 }
 
 .forgot-password a:hover {
-  color: #068047;
+  color: #0056b3; /* Darker Blue on Hover */
 }

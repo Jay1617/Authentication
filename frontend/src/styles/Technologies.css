@@ -1,68 +1,88 @@
+/* Technologies Section Styles */
 .technologies-section {
-  padding: 50px 20px;
+  padding: 60px 20px; /* Increased padding for better spacing */
   text-align: center;
   min-height: 70vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  background: #f9f9f9; /* Light background color for contrast */
 }
 
 .technologies-section h1 {
-  font-size: 44px;
+  font-size: 48px; /* Larger heading for prominence */
   color: #0cbb69;
   margin-bottom: 30px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1); /* Subtle text shadow for a soft effect */
 }
 
 .tech-cards-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 20px;
+  gap: 30px; /* Increased gap between cards for better spacing */
 }
 
 .tech-card {
   background: white;
-  border-radius: 15px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 12px; /* Rounded corners for a softer look */
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15); /* Increased shadow for better depth */
   overflow: hidden;
-  max-width: 300px;
-  padding: 20px;
+  max-width: 320px; /* Slightly larger max width */
+  width: 100%;
+  padding: 30px;
   text-align: center;
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .tech-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+  transform: translateY(-12px); /* Slightly higher lift on hover */
+  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.2); /* Increased shadow on hover */
 }
 
 .tech-image img {
-  width: 80px;
-  height: 80px;
-  margin-bottom: 20px;
+  width: 90px; /* Slightly larger icon size */
+  height: 90px;
+  margin-bottom: 25px; /* Increased space below the image */
   object-fit: contain;
 }
 
 .tech-name {
-  font-size: 1.5rem;
+  font-size: 1.6rem; /* Slightly larger font size for better visibility */
   color: #0cbb69;
-  margin-bottom: 10px;
+  margin-bottom: 15px; /* Increased margin for better spacing */
 }
 
 .tech-description {
-  font-size: 1rem;
+  font-size: 1.1rem; /* Increased font size for readability */
   color: #555;
   line-height: 1.6;
+  margin-bottom: 20px; /* Extra margin for better readability */
 }
 
+/* Responsive Design */
 @media (max-width: 768px) {
   .tech-cards-container {
     flex-direction: column;
     align-items: center;
+    gap: 25px; /* Adjusted gap for better spacing on mobile */
   }
 
   .tech-card {
     max-width: 90%;
+    padding: 20px; /* Reduced padding on smaller screens */
+  }
+
+  .tech-image img {
+    width: 70px; /* Smaller icons on mobile */
+    height: 70px;
+  }
+
+  .tech-name {
+    font-size: 1.4rem; /* Slightly smaller font size for mobile */
+  }
+
+  .tech-description {
+    font-size: 1rem; /* Adjusted font size for readability */
   }
 }
