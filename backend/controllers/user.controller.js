@@ -6,6 +6,7 @@ import { sendToken } from "../utils/sendToken.js";
 import twilio from "twilio";
 import crypto from "crypto";
 import bcrypt from "bcrypt";
+import { log } from "console";
 
 const client = twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
 
@@ -27,12 +28,9 @@ export const register = catchAsyncError(async (req, res, next) => {
 
     function validateAndFormatPhone(phone) {
       const phoneRegex = /^[6-9][0-9]{9}$/;
-      const fullPhoneRegex = /^\+91[6-9][0-9]{9}$/;
 
-      if (fullPhoneRegex.test(phone)) {
+      if (phoneRegex.test(phone)) {
         return phone;
-      } else if (phoneRegex.test(phone)) {
-        return `+91${phone}`;
       } else {
         return null;
       }
@@ -192,12 +190,9 @@ export const verifyAccount = catchAsyncError(async (req, res, next) => {
 
     function validateAndFormatPhone(phone) {
       const phoneRegex = /^[6-9][0-9]{9}$/;
-      const fullPhoneRegex = /^\+91[6-9][0-9]{9}$/;
 
-      if (fullPhoneRegex.test(phone)) {
+      if (phoneRegex.test(phone)) {
         return phone;
-      } else if (phoneRegex.test(phone)) {
-        return `+91${phone}`;
       } else {
         return null;
       }
@@ -226,11 +221,20 @@ export const verifyAccount = catchAsyncError(async (req, res, next) => {
       return next(new ErrorHandler("User already verified", 400));
     }
 
+    console.log(email, formattedPhone, verificationCode);
+
+    const formattedCode = parseInt(verificationCode, 10);
+    if (isNaN(formattedCode)) {
+      return next(new ErrorHandler("Invalid verification code format", 400));
+    }
+
     const user = await User.findOne({
       email,
       phone: formattedPhone,
-      verificationCode,
+      verificationCode : formattedCode,
     });
+
+    console.log(user);
 
     if (!user) {
       return next(new ErrorHandler("Invalid verification code", 400));
@@ -353,7 +357,7 @@ export const resetPassword = catchAsyncError(async (req, res, next) => {
   const user = await User.findOne({
     resetPasswordToken,
     resetPasswordExpires: { $gt: Date.now() },
-  }).select('+password');;
+  }).select("+password");
 
   if (!user) {
     return next(new ErrorHandler("Invalid reset token", 400));

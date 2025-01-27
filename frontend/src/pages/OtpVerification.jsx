@@ -32,11 +32,13 @@ const OtpVerification = () => {
     const enteredOtp = otp.join("");
     const data = {
       email,
-      otp: enteredOtp,
       phone,
+      verificationCode: enteredOtp,
     };
+    console.log(data);
+    
     await axios
-      .post("http://localhost:5500/api/v1/user/verity-otp", data, {
+      .post("http://localhost:5500/api/v1/user/verify-otp", data, {
         withCredentials: true,
         headers: { "Content-Type": "application/json" },
       })
@@ -48,7 +50,7 @@ const OtpVerification = () => {
       .catch((err) => {
         toast.error(err.response.data.message);
         setIsAuthenticated(false);
-        setUser(null);
+        setUser(null);  
       });
   };
 
