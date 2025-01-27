@@ -20,6 +20,7 @@
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.9.5",
+    "node-cron": "^3.0.3",
     "nodemailer": "^6.9.16",
     "twilio": "^5.4.2",
     "validator": "^13.12.0"
