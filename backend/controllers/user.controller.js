@@ -234,7 +234,7 @@ export const verifyAccount = catchAsyncError(async (req, res, next) => {
       verificationCode : formattedCode,
     });
 
-    console.log(user);
+    // console.log(user);
 
     if (!user) {
       return next(new ErrorHandler("Invalid verification code", 400));
