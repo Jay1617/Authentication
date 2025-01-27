@@ -30,7 +30,7 @@
   width: 150px;
   height: 150px;
   border-radius: 50%;
-  border: 5px solid #0cbb69; /* Green border */
+  border: 5px solid #0056b3; /* Green border */
   margin-bottom: 20px;
   transition: transform 0.3s ease; /* Smooth image hover effect */
 }
@@ -48,7 +48,7 @@
 
 .instructor-info h4 {
   font-size: 32px;
-  color: #0cbb69; /* Green color */
+  color: #0056b3; /* Green color */
   margin-bottom: 20px;
 }
 
@@ -68,7 +68,7 @@
 .social-links a {
   text-decoration: none;
   color: white;
-  background: #0cbb69; /* Green background */
+  background: #0056b3; /* Green background */
   padding: 12px 24px;
   border-radius: 8px;
   font-size: 1rem;
@@ -77,7 +77,7 @@
 }
 
 .social-links a:hover {
-  background: #068047; /* Darker green on hover */
+  background: #004c9d; /* Darker green on hover */
   transform: translateY(-3px); /* Slight lift effect on hover */
 }
 

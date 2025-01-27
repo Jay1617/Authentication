@@ -41,7 +41,7 @@
   font-size: 1rem;
   border: none;
   background: #f1f6fc; /* Light Blue background */
-  color: #007bff; /* Blue Text */
+  color: #0056b3; /* Blue Text */
   cursor: pointer;
   transition: background 0.3s, color 0.3s;
 }
@@ -54,7 +54,7 @@
 /* Form Heading */
 .auth-form h2 {
   margin-bottom: 20px;
-  color: #007bff; /* Blue Text */
+  color: #0056b3; /* Blue Text */
 }
 
 /* Form Input Fields */
@@ -92,7 +92,7 @@
 .auth-form button {
   width: 100%;
   padding: 12px;
-  background: #007bff; /* Blue Button */
+  background: #0056b3; /* Blue Button */
   color: white;
   border: none;
   border-radius: 5px;
@@ -135,7 +135,7 @@
   text-align: end;
   margin: 20px 0;
   font-size: 16px;
-  color: #007bff; /* Blue Text */
+  color: #0056b3; /* Blue Text */
 }
 
 .forgot-password a {
@@ -146,5 +146,5 @@
 }
 
 .forgot-password a:hover {
-  color: #0056b3; /* Darker Blue on Hover */
+  color: #004085; /* Darker Blue on Hover */
 }

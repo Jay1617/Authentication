@@ -51,12 +51,12 @@
 }
 
 .otp-input:focus {
-  border-color: #0cbb69; /* Green focus border */
+  border-color: #0056b3; /* Green focus border */
   background: #fff; /* Clean white background on focus */
 }
 
 .verify-button {
-  background: #0cbb69;
+  background: #0056b3;
   color: #fff;
   font-size: 1rem;
   padding: 12px 20px;
@@ -69,7 +69,7 @@
 }
 
 .verify-button:hover {
-  background: #068047; /* Darker green on hover */
+  background: #004a9a; /* Darker green on hover */
 }
 
 /* Responsive Design */

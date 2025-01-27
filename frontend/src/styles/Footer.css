@@ -1,6 +1,6 @@
 /* Footer Styling */
 .footer {
-  background: #007bff; /* Blue background */
+  background: #0056b3; /* Blue background */
   color: white;
   padding: 40px 20px;
 }
@@ -48,7 +48,7 @@
 }
 
 .social-link:hover {
-  background: #0056b3; /* Darker blue on hover */
+  background: rgb(208, 208, 208); /* Darker blue on hover */
 }
 
 .social-link img {
