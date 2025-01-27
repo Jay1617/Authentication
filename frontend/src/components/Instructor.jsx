@@ -1,19 +1,19 @@
 import React from "react";
 import "../styles/Instructor.css";
-import instructorImage from "../assets/profile.png";
+import profile from "../assets/profile.jpeg";
 
 const Instructor = () => {
   return (
     <div className="instructor-page">
       <div className="instructor-card">
         <div className="instructor-image">
-          <img src={instructorImage} alt="Instructor" />
+          <img src={profile} alt="Instructor" />
         </div>
         <div className="instructor-info">
-          <h1>Muhammad Zeeshan Khan</h1>
-          <h4>Your Instructor</h4>
+          <h1>Jay Thummar</h1>
+          <h4>Developer</h4>
           <p>
-            Hello! I'm Muhammad Zeeshan Khan, a passionate MERN stack developer
+            Hello! I'm Jay Thummar, a passionate MERN stack developer
             with a love for teaching and building scalable, robust applications.
             With years of experience in JavaScript, React, Node.js, Express, and
             MongoDB, I am dedicated to helping developers learn and grow their
@@ -22,25 +22,25 @@ const Instructor = () => {
           </p>
           <div className="social-links">
             <a
-              href="https://github.com/Zeeshu911"
+              href="https://github.com/jay1617"
               target="_blank"
               rel="noopener noreferrer"
             >
               GitHub
             </a>
             <a
-              href="https://www.linkedin.com/in/muhammad-zeeshan-khan-dev/"
+              href="https://www.linkedin.com/in/jay-thummar-256ba4250/"
               target="_blank"
               rel="noopener noreferrer"
             >
               LinkedIn
             </a>
             <a
-              href="https://www.youtube.com/channel/UCbGtkGZ9sDg54PtU3GEDE6w"
+              href="https://x.com/JayThummar1617"
               target="_blank"
               rel="noopener noreferrer"
             >
-              Youtube
+              X
             </a>
           </div>
         </div>
